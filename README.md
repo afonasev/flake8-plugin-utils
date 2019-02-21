@@ -40,35 +40,13 @@ class MyPlugin(Plugin):
 and test it with pytest
 
 ```python
-from flake8_plugin_utils import get_error
+from flake8_plugin_utils import assert_error, assert_not_error
 
-def test_error_msg(tmpdir):
-    assert get_error(MyPlugin, tmpdir, 'class Y: pass') == 'X100 my error'
+def test_code_with_error():
+    assert_error(MyVisitor, 'class Y: pass', MyError)
 
-@pytest.mark.parametrize('src', (
-    'class X:\n    pass',
-    'class Y: pass',
-))
-def test_error_exists(tmpdir, src):
-    assert get_error(MyPlugin, tmpdir, src)
-
-@pytest.mark.parametrize('src', (
-    'def x():\n    pass',
-    '\nx = 13',
-))
-def test_error_not_exists(tmpdir, src):
-    assert not get_error(MyPlugin, tmpdir, src)
-```
-
-If you want build error message dynamically use property
-
-```python
-class MyError(Error):
-    code = 'X100'
-
-    @property
-    def message(self):
-        return f'{self.code} my error from property'
+def test_code_without_error():
+    assert_not_error(MyVisitor, 'x = 1)
 ```
 
 ## License
@@ -76,6 +54,10 @@ class MyError(Error):
 MIT
 
 ## Change Log
+
+### 0.2.0 - 2019.02.21
+
+* add assert methods
 
 ### 0.1.0 - 2019.02.09
 

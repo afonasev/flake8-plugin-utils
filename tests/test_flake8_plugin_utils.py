@@ -1,5 +1,9 @@
 import pytest
-from flake8_plugin_utils import Error, Plugin, Visitor, check_noqa, get_error
+from flake8_plugin_utils.plugin import Error, Visitor, check_noqa
+from flake8_plugin_utils.utils import assert_error, assert_not_error
+
+CODE = 'x = 1'
+CODE_WITH_ERROR = 'class Y: pass'
 
 
 class MyError(Error):
@@ -10,12 +14,6 @@ class MyError(Error):
 class MyVisitor(Visitor):
     def visit_ClassDef(self, node):
         self.error_from_node(MyError, node)
-
-
-class MyPlugin(Plugin):
-    name = 'MyPlugin'
-    version = '0.1.0'
-    visitors = [MyVisitor]
 
 
 @pytest.mark.parametrize(
@@ -32,15 +30,19 @@ def test_check_noqa(line, code, result):
     assert check_noqa(line, code) is result
 
 
-def test_error_msg(tmpdir):
-    assert get_error(MyPlugin, tmpdir, 'class Y: pass') == 'X100 my error'
+def test_assert_error_ok():
+    assert_error(MyVisitor, CODE_WITH_ERROR, MyError)
 
 
-@pytest.mark.parametrize('src', ('class X:\n    pass', '\nclass Y: pass'))
-def test_error_exists(tmpdir, src):
-    assert get_error(MyPlugin, tmpdir, src)
+def test_assert_error_fail():
+    with pytest.raises(AssertionError):
+        assert_error(MyVisitor, CODE, MyError)
 
 
-@pytest.mark.parametrize('src', ('def x():\n    pass', '\nx = 13'))
-def test_error_not_exists(tmpdir, src):
-    assert not get_error(MyPlugin, tmpdir, src)
+def test_assert_not_error_ok():
+    assert_not_error(MyVisitor, CODE)
+
+
+def test_assert_not_error_fail():
+    with pytest.raises(AssertionError):
+        assert_not_error(MyVisitor, CODE_WITH_ERROR)
