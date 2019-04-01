@@ -55,7 +55,7 @@ MIT
 
 ## Change Log
 
-### Unreleased
+### 0.2.1 - 2019-04-01
 
 * don`t strip before src dedent in _error_from_src
 * add is_none, is_true, is_false util functions
