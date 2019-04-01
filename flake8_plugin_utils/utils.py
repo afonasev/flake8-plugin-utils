@@ -5,9 +5,25 @@ from typing import Optional, Type
 from .plugin import Error, Visitor
 
 
+def _is(node: ast.AST, value: object) -> bool:
+    return isinstance(node, ast.NameConstant) and node.value is value
+
+
+def is_none(node: ast.AST) -> bool:
+    return _is(node, None)
+
+
+def is_false(node: ast.AST) -> bool:
+    return _is(node, False)
+
+
+def is_true(node: ast.AST) -> bool:
+    return _is(node, True)
+
+
 def _error_from_src(visitor_cls: Type[Visitor], src: str) -> Optional[Error]:
     visitor = visitor_cls()
-    tree = ast.parse(dedent(src.strip()))
+    tree = ast.parse(dedent(src))
     visitor.visit(tree)
     if not visitor.errors:
         return None

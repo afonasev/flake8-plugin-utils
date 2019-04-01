@@ -55,6 +55,11 @@ MIT
 
 ## Change Log
 
+### Unreleased
+
+* don`t strip before src dedent in _error_from_src
+* add is_none, is_true, is_false util functions
+
 ### 0.2.0 - 2019.02.21
 
 * add assert methods
