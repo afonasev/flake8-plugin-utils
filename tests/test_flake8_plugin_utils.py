@@ -8,12 +8,12 @@ CODE_WITH_ERROR = 'class Y: pass'
 
 class MyError(Error):
     code = 'X100'
-    message = 'my error'
+    message = 'my error with {thing}'
 
 
 class MyVisitor(Visitor):
     def visit_ClassDef(self, node):
-        self.error_from_node(MyError, node)
+        self.error_from_node(MyError, node, thing=node.name)
 
 
 @pytest.mark.parametrize(
@@ -31,12 +31,17 @@ def test_check_noqa(line, code, result):
 
 
 def test_assert_error_ok():
-    assert_error(MyVisitor, CODE_WITH_ERROR, MyError)
+    assert_error(MyVisitor, CODE_WITH_ERROR, MyError, thing='Y')
 
 
-def test_assert_error_fail():
+@pytest.mark.parametrize(
+    ('code', 'kwargs'),
+    ((CODE, {}), (CODE_WITH_ERROR, {'thing': 'X'})),
+    ids=('no error', 'wrong kwargs'),
+)
+def test_assert_error_fail(code, kwargs):
     with pytest.raises(AssertionError):
-        assert_error(MyVisitor, CODE, MyError)
+        assert_error(MyVisitor, code, MyError, **kwargs)
 
 
 def test_assert_not_error_ok():
@@ -46,3 +51,13 @@ def test_assert_not_error_ok():
 def test_assert_not_error_fail():
     with pytest.raises(AssertionError):
         assert_not_error(MyVisitor, CODE_WITH_ERROR)
+
+
+def test_error_formatting_ok():
+    error = MyError(1, 1, thing='XXX')
+    assert error.message == 'my error with XXX'
+
+
+def test_error_formatting_fail():
+    with pytest.raises(KeyError):
+        MyError(1, 1, wrong_arg='XXX')
