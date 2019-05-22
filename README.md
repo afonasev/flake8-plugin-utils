@@ -46,7 +46,31 @@ def test_code_with_error():
     assert_error(MyVisitor, 'class Y: pass', MyError)
 
 def test_code_without_error():
-    assert_not_error(MyVisitor, 'x = 1)
+    assert_not_error(MyVisitor, 'x = 1')
+```
+
+### Formatting
+
+Your `Error`s can take formatting arguments in their `message`:
+
+```python
+from flake8_plugin_utils import Error, Visitor, assert_error
+
+class MyFormattedError(Error):
+    code = 'X101'
+    message = 'my error with {thing}'
+
+class MyFormattedVisitor(Visitor):
+    def visit_ClassDef(self, node):
+        self.error_from_node(MyFormattedError, node, thing=node.name)
+
+def test_code_with_error():
+    assert_error(
+        MyFormattedVisitor,
+        'class Y: pass',
+        MyFormattedError,
+        thing='Y',
+    )
 ```
 
 ## License
@@ -54,6 +78,10 @@ def test_code_without_error():
 MIT
 
 ## Change Log
+
+### Unreleased
+
+* add message formatting to Error
 
 ### 0.2.1 - 2019-04-01
 
