@@ -8,7 +8,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://en.wikipedia.org/wiki/MIT_License)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
-Package provide base classes and utils for flake8 plugin writing.
+The package provides base classes and utils for flake8 plugin writing.
 
 ## Installation
 
@@ -79,19 +79,23 @@ MIT
 
 ## Change Log
 
-### Unreleased
+Unreleased
+-----
 
 * add message formatting to Error
 
-### 0.2.1 - 2019-04-01
+0.2.1 - 2019-04-01
+-----
 
 * don`t strip before src dedent in _error_from_src
 * add is_none, is_true, is_false util functions
 
-### 0.2.0 - 2019.02.21
+0.2.0 - 2019.02.21
+-----
 
 * add assert methods
 
-### 0.1.0 - 2019.02.09
+0.1.0 - 2019.02.09
+-----
 
 * initial

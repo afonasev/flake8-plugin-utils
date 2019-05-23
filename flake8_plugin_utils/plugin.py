@@ -69,11 +69,6 @@ class Plugin:
             self,
         )
 
-    @classmethod
-    def add_visitor(cls, visitor_cls: Type[Visitor]) -> Type[Visitor]:
-        cls.visitors.append(visitor_cls)
-        return visitor_cls
-
 
 def check_noqa(line: str, code: str) -> bool:
     if NOQA_REGEXP.search(line):
