@@ -26,14 +26,14 @@ class MyPlugin(Plugin):
 
 @pytest.mark.parametrize(
     ('line', 'code', 'result'),
-    (
+    [
         ('x = 1 # noqa', '', True),
         ('x = 1 # noqa', 'X100', True),
         ('x = 1 # noqa:X100', 'X100', True),
         ('x = 1 # NOQA : x100', 'X100', True),
         ('x = 1 # noqa:X101', 'X100', False),
         ('x = 1 # some comment', 'X100', False),
-    ),
+    ],
 )
 def test_check_noqa(line, code, result):
     assert check_noqa(line, code) is result
@@ -45,7 +45,7 @@ def test_assert_error_ok():
 
 @pytest.mark.parametrize(
     ('code', 'kwargs'),
-    ((CODE, {}), (CODE_WITH_ERROR, {'thing': 'X'})),
+    [(CODE, {}), (CODE_WITH_ERROR, {'thing': 'X'})],
     ids=('no error', 'wrong kwargs'),
 )
 def test_assert_error_fail(code, kwargs):

@@ -82,6 +82,11 @@ MIT
 Unreleased
 -----
 
+* ...
+
+1.0.0 - 2019-05-23
+-----
+
 * add message formatting to Error
 
 0.2.1 - 2019-04-01
