@@ -1,7 +1,7 @@
 import argparse
 import ast
 import re
-from typing import Any, Generic, Iterable, List, Tuple, Type, TypeVar
+from typing import Any, ClassVar, Generic, Iterable, List, Tuple, Type, TypeVar
 
 from flake8.options.manager import OptionManager
 
@@ -96,7 +96,7 @@ class ConfigurableVisitor(Generic[TConfig], Visitor):
 class ConfigurablePlugin(
     Generic[TConfig], BasePlugin[ConfigurableVisitor[TConfig]]
 ):
-    config: TConfig
+    config: ClassVar[TConfig]
 
     @classmethod
     def add_options(cls, option_manager: OptionManager) -> None:
