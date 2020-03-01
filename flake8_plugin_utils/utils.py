@@ -21,7 +21,9 @@ def is_true(node: ast.AST) -> bool:
     return _is(node, True)
 
 
-def _error_from_src(visitor_cls: Type[Visitor], src: str) -> Optional[Error]:
+def _error_from_src(
+    visitor_cls: Type[Visitor[Any]], src: str
+) -> Optional[Error]:
     visitor = visitor_cls()
     tree = ast.parse(dedent(src))
     visitor.visit(tree)
@@ -32,7 +34,10 @@ def _error_from_src(visitor_cls: Type[Visitor], src: str) -> Optional[Error]:
 
 
 def assert_error(
-    visitor_cls: Type[Visitor], src: str, expected: Type[Error], **kwargs: Any
+    visitor_cls: Type[Visitor[Any]],
+    src: str,
+    expected: Type[Error],
+    **kwargs: Any,
 ) -> None:
     err = _error_from_src(visitor_cls, src)
     assert err, f'Error "{expected.message}" not found in\n{src}'
@@ -44,6 +49,6 @@ def assert_error(
     ), f'Expected error with message "{expected_message}", got "{err.message}"'
 
 
-def assert_not_error(visitor_cls: Type[Visitor], src: str) -> None:
+def assert_not_error(visitor_cls: Type[Visitor[Any]], src: str) -> None:
     err = _error_from_src(visitor_cls, src)
     assert not err, f'Error "{err.message}" found in\n{src}'  # type: ignore

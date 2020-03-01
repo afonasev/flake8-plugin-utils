@@ -1,4 +1,5 @@
 import ast
+from typing import NamedTuple
 
 import pytest
 from flake8_plugin_utils.plugin import Error, Plugin, Visitor, check_noqa
@@ -13,15 +14,39 @@ class MyError(Error):
     message = 'my error with {thing}'
 
 
-class MyVisitor(Visitor):
+class MyVisitor(Visitor[None]):
     def visit_ClassDef(self, node):
         self.error_from_node(MyError, node, thing=node.name)
 
 
-class MyPlugin(Plugin):
+class MyPlugin(Plugin[None]):
     name = 'MyPlugin'
     version = '0.0.1'
     visitors = [MyVisitor]
+
+
+class MyConfig(NamedTuple):
+    config_option: str
+
+
+class MyVisitorWithConfig(Visitor[MyConfig]):
+    def visit_ClassDef(self, node):
+        self.error_from_node(
+            MyError, node, thing=f'{node.name} {self.config.config_option}'
+        )
+
+
+class MyPluginWithConfig(Plugin[MyConfig]):
+    name = 'MyPluginWithConfig'
+    version = '0.0.1'
+    visitors = [MyVisitorWithConfig]
+
+
+@pytest.fixture()
+def code_file(tmpdir):
+    code_file = tmpdir.join('./code.py')
+    code_file.write('class X:\n    pass')
+    return code_file
 
 
 @pytest.mark.parametrize(
@@ -72,9 +97,15 @@ def test_error_formatting_fail():
         MyError(1, 1, wrong_arg='XXX')
 
 
-def test_plugin_run(tmpdir):
-    code_file = tmpdir.join('./code.py')
-    code_file.write('class X:\n    pass')
-    plugin = MyPlugin(ast.parse(''), code_file)
-    error = list(plugin.run())[0]
+def test_plugin_run(code_file):
+    with MyPlugin.test_config(None):
+        plugin = MyPlugin(ast.parse(''), code_file)
+        error = list(plugin.run())[0]
     assert error == (1, 0, 'X100 my error with X', plugin)
+
+
+def test_plugin_with_config_run(code_file):
+    with MyPluginWithConfig.test_config(MyConfig(config_option='123')):
+        plugin = MyPluginWithConfig(ast.parse(''), code_file)
+        error = list(plugin.run())[0]
+    assert error == (1, 0, 'X100 my error with X 123', plugin)
