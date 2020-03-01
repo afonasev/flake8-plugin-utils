@@ -49,6 +49,51 @@ def test_code_without_error():
     assert_not_error(MyVisitor, 'x = 1')
 ```
 
+### Configuration
+
+To add configuration to a plugin, do the following:
+
+1. Implement classmethod `add_options` in your plugin class, as per the
+[flake8 docs](https://flake8.pycqa.org/en/latest/plugin-development/plugin-parameters.html#registering-options).
+1. Override classmethod `parse_options_to_config` in your plugin class
+to return any object holding the options you need.
+1. If you need a custom `__init__` for your visitor, make sure it accepts
+a keyword argument named `config` and pass it to `super().__init__`
+1. Use `self.config` in visitor code.
+
+Example:
+
+```python
+from flake8_plugin_utils import Error, Visitor, Plugin
+
+class MyError(Error):
+    code = 'X100'
+    message = 'my error with {thing}'
+
+class MyConfig:
+    def __init__(self, config_option):
+        self.config_option = config_option
+
+class MyVisitorWithConfig(Visitor):
+    def visit_ClassDef(self, node):
+        self.error_from_node(
+            MyError, node, thing=f'{node.name} {self.config.config_option}'
+        )
+
+class MyPluginWithConfig(Plugin):
+    name = 'MyPluginWithConfig'
+    version = '0.0.1'
+    visitors = [MyVisitorWithConfig]
+
+    @classmethod
+    def add_options(cls, options_manager):
+        options_manager.add_option('--config_option', ...)
+
+    @classmethod
+    def parse_options_to_config(cls, option_manager, options, args):
+        return MyConfig(config_option=options.config_option)
+```
+
 ### Formatting
 
 Your `Error`s can take formatting arguments in their `message`:
@@ -73,6 +118,14 @@ def test_code_with_error():
     )
 ```
 
+### Usage with typing/mypy
+
+The `Plugin` and `Visitor` classes are generic with the config class as type
+parameter.  If your plugin does not have any config, inherit it from
+`Plugin[None]` and the visitors from `Visitor[None]`.  Otherwise, use the
+config class as the type parameter (e.g. `Plugin[MyConfig]` and
+`Visitor[MyConfig]` in the above example).
+
 ## License
 
 MIT
@@ -82,7 +135,9 @@ MIT
 Unreleased
 -----
 
-* ...
+* add ability for plugins to parse and use configuration  
+**NB: this change breaks type-checking if you use typing/mypy. Change your
+code to inherit from `Plugin[None]` and `Visitor[None]` to fix.**
 
 1.0.0 - 2019-05-23
 -----
