@@ -2,7 +2,7 @@ import ast
 from textwrap import dedent
 from typing import Any, Optional, Type
 
-from .plugin import Error, Visitor
+from .plugin import Error, TConfig, Visitor
 
 
 def _is(node: ast.AST, value: object) -> bool:
@@ -22,9 +22,11 @@ def is_true(node: ast.AST) -> bool:
 
 
 def _error_from_src(
-    visitor_cls: Type[Visitor[Any]], src: str
+    visitor_cls: Type[Visitor[TConfig]],
+    src: str,
+    config: Optional[TConfig] = None,
 ) -> Optional[Error]:
-    visitor = visitor_cls()
+    visitor = visitor_cls(config=config)
     tree = ast.parse(dedent(src))
     visitor.visit(tree)
     if not visitor.errors:
@@ -34,12 +36,13 @@ def _error_from_src(
 
 
 def assert_error(
-    visitor_cls: Type[Visitor[Any]],
+    visitor_cls: Type[Visitor[TConfig]],
     src: str,
     expected: Type[Error],
+    config: Optional[TConfig] = None,
     **kwargs: Any,
 ) -> None:
-    err = _error_from_src(visitor_cls, src)
+    err = _error_from_src(visitor_cls, src, config=config)
     assert err, f'Error "{expected.message}" not found in\n{src}'
     assert isinstance(err, expected)
 
@@ -49,6 +52,10 @@ def assert_error(
     ), f'Expected error with message "{expected_message}", got "{err.message}"'
 
 
-def assert_not_error(visitor_cls: Type[Visitor[Any]], src: str) -> None:
-    err = _error_from_src(visitor_cls, src)
+def assert_not_error(
+    visitor_cls: Type[Visitor[TConfig]],
+    src: str,
+    config: Optional[TConfig] = None,
+) -> None:
+    err = _error_from_src(visitor_cls, src, config=config)
     assert not err, f'Error "{err.message}" found in\n{src}'  # type: ignore

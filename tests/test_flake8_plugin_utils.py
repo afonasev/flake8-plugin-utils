@@ -64,27 +64,48 @@ def test_check_noqa(line, code, result):
     assert check_noqa(line, code) is result
 
 
-def test_assert_error_ok():
-    assert_error(MyVisitor, CODE_WITH_ERROR, MyError, thing='Y')
+@pytest.mark.parametrize(
+    ('visitor', 'config', 'expected_thing'),
+    [
+        (MyVisitor, None, 'Y'),
+        (MyVisitorWithConfig, MyConfig(config_option='123'), 'Y 123'),
+    ],
+)
+def test_assert_error_ok(visitor, config, expected_thing):
+    assert_error(
+        visitor, CODE_WITH_ERROR, MyError, config=config, thing=expected_thing
+    )
 
 
+@pytest.mark.parametrize(
+    ('visitor', 'config'),
+    [(MyVisitor, None), (MyVisitorWithConfig, MyConfig(config_option='123'))],
+)
 @pytest.mark.parametrize(
     ('code', 'kwargs'),
     [(CODE, {}), (CODE_WITH_ERROR, {'thing': 'X'})],
     ids=('no error', 'wrong kwargs'),
 )
-def test_assert_error_fail(code, kwargs):
+def test_assert_error_fail(visitor, config, code, kwargs):
     with pytest.raises(AssertionError):
-        assert_error(MyVisitor, code, MyError, **kwargs)
+        assert_error(visitor, code, MyError, config=config, **kwargs)
 
 
-def test_assert_not_error_ok():
-    assert_not_error(MyVisitor, CODE)
+@pytest.mark.parametrize(
+    ('visitor', 'config'),
+    [(MyVisitor, None), (MyVisitorWithConfig, MyConfig(config_option='123'))],
+)
+def test_assert_not_error_ok(visitor, config):
+    assert_not_error(visitor, CODE, config=config)
 
 
-def test_assert_not_error_fail():
+@pytest.mark.parametrize(
+    ('visitor', 'config'),
+    [(MyVisitor, None), (MyVisitorWithConfig, MyConfig(config_option='123'))],
+)
+def test_assert_not_error_fail(visitor, config):
     with pytest.raises(AssertionError):
-        assert_not_error(MyVisitor, CODE_WITH_ERROR)
+        assert_not_error(visitor, CODE_WITH_ERROR, config=config)
 
 
 def test_error_formatting_ok():
