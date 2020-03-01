@@ -135,6 +135,11 @@ MIT
 Unreleased
 -----
 
+* ...
+
+1.1.1 - 2020-03-02
+-----
+
 * ignore encoding errors when reading strings for noqa validation
 
 1.1.0 - 2020-03-01
