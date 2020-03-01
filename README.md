@@ -135,6 +135,11 @@ MIT
 Unreleased
 -----
 
+* ...
+
+1.1.0 - 2020-03-01
+-----
+
 * add ability for plugins to parse and use configuration  
 **NB: this change breaks type-checking if you use typing/mypy. Change your
 code to inherit from `Plugin[None]` and `Visitor[None]` to fix.**
