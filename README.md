@@ -64,7 +64,7 @@ a keyword argument named `config` and pass it to `super().__init__`
 Example:
 
 ```python
-from flake8_plugin_utils import Error, Visitor, Plugin
+from flake8_plugin_utils import Error, Visitor, Plugin, assert_error
 
 class MyError(Error):
     code = 'X100'
@@ -92,6 +92,16 @@ class MyPluginWithConfig(Plugin):
     @classmethod
     def parse_options_to_config(cls, option_manager, options, args):
         return MyConfig(config_option=options.config_option)
+
+
+def test_code_with_error():
+    assert_error(
+        MyVisitorWithConfig,
+        'class Y: pass',
+        MyError,
+        config=MyConfig(config_option='123'),
+        thing='Y 123',
+    )
 ```
 
 ### Formatting
@@ -135,7 +145,7 @@ MIT
 Unreleased
 -----
 
-* ...
+* add `config` argument to `assert_error` and `assert_not_error`
 
 1.1.1 - 2020-03-02
 -----
