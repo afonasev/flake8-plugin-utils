@@ -145,6 +145,11 @@ MIT
 Unreleased
 -----
 
+* ...
+
+1.2.0 - 2020-03-06
+-----
+
 * add `config` argument to `assert_error` and `assert_not_error`
 
 1.1.1 - 2020-03-02

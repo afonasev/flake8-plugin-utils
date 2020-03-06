@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "flake8-plugin-utils"
-version = "1.1.1"
+version = "1.2.0"
 description = "The package provides base classes and utils for flake8 plugin writing"
 authors = ["Afonasev Evgeniy <ea.afonasev@gmail.com>"]
 license = "MIT"
