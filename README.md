@@ -136,6 +136,25 @@ parameter.  If your plugin does not have any config, inherit it from
 config class as the type parameter (e.g. `Plugin[MyConfig]` and
 `Visitor[MyConfig]` in the above example).
 
+### Utility functions
+
+* `assert_error`, `assert_not_error`  
+Utilities for testing visitors (see examples above).
+
+* `is_true`, `is_false`, `is_none`  
+Convenience functions to check if an AST node represents a
+`True`/`False`/`None` value.
+
+* `check_equivalent_nodes`  
+Checks if two given AST nodes are equivalent.
+The nodes are considered equivalent in the following cases:
+  * dicts -- if they contain same key-value pairs, possibly in different order,
+  with duplicates and `**expansions` taken into account
+  * sets -- if they contain same elements, possibly in different order,
+  with duplicates taken into account
+  * anything else -- if they represent the same AST, regardless of formatting
+  (with any dicts in sets inside checked according to the rules above)
+
 ## License
 
 MIT
@@ -145,7 +164,7 @@ MIT
 Unreleased
 -----
 
-* ...
+* add `check_equivalent_nodes` utility function
 
 1.2.0 - 2020-03-06
 -----
@@ -160,7 +179,7 @@ Unreleased
 1.1.0 - 2020-03-01
 -----
 
-* add ability for plugins to parse and use configuration
+* add ability for plugins to parse and use configuration  
 **NB: this change breaks type-checking if you use typing/mypy. Change your
 code to inherit from `Plugin[None]` and `Visitor[None]` to fix.**
 
