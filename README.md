@@ -164,6 +164,11 @@ MIT
 Unreleased
 -----
 
+* ...
+
+1.3.0 - 2020-03-26
+-----
+
 * add `check_equivalent_nodes` utility function
 
 1.2.0 - 2020-03-06
