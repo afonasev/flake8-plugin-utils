@@ -138,14 +138,14 @@ config class as the type parameter (e.g. `Plugin[MyConfig]` and
 
 ### Utility functions
 
-* `assert_error`, `assert_not_error`  
+* `assert_error`, `assert_not_error`
 Utilities for testing visitors (see examples above).
 
-* `is_true`, `is_false`, `is_none`  
+* `is_true`, `is_false`, `is_none`
 Convenience functions to check if an AST node represents a
 `True`/`False`/`None` value.
 
-* `check_equivalent_nodes`  
+* `check_equivalent_nodes`
 Checks if two given AST nodes are equivalent.
 The nodes are considered equivalent in the following cases:
   * dicts -- if they contain same key-value pairs, possibly in different order,
@@ -166,6 +166,11 @@ Unreleased
 
 * ...
 
+1.3.1 - 2020-08-06
+-----
+
+* Fix handling of encoding when loading files (#37)
+
 1.3.0 - 2020-03-26
 -----
 
@@ -184,7 +189,7 @@ Unreleased
 1.1.0 - 2020-03-01
 -----
 
-* add ability for plugins to parse and use configuration  
+* add ability for plugins to parse and use configuration
 **NB: this change breaks type-checking if you use typing/mypy. Change your
 code to inherit from `Plugin[None]` and `Visitor[None]` to fix.**
 
