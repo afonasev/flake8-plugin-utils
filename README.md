@@ -169,6 +169,11 @@ Unreleased
 1.3.1 - 2020-08-06
 -----
 
+* ...
+
+1.3.1 - 2020-08-06
+-----
+
 * Fix handling of encoding when loading files (#37)
 
 1.3.0 - 2020-03-26
