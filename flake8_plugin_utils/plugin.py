@@ -84,11 +84,12 @@ class Plugin(Generic[TConfig]):
                     yield self._error(error)
 
     def _load_file(self) -> None:
+        with open(self._filename, 'rb') as f:
+            content = f.read()
+        self._tree = ast.parse(content)
         # lines is only used for noqa verification,
         # and we can ignore encoding errors
-        with open(self._filename, errors='replace') as f:
-            self._lines = f.readlines()
-        self._tree = ast.parse(''.join(self._lines))
+        self._lines = content.decode('utf-8', errors='replace').splitlines()
 
     def _error(self, error: Error) -> FLAKE8_ERROR:
         return (
