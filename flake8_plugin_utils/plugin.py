@@ -79,11 +79,17 @@ class Plugin(Generic[TConfig]):
             visitor.visit(self._tree)
 
             for error in visitor.errors:
-                line = self._lines[error.lineno - 1]
-                if not check_noqa(line, error.code):
+                if len(self._lines) < error.lineno:
+                    # We don't actually need to check noqa lines?
                     yield self._error(error)
+                else:
+                    line = self._lines[error.lineno - 1]
+                    if not check_noqa(line, error.code):
+                        yield self._error(error)
 
     def _load_file(self) -> None:
+        if self._filename == 'stdin':
+            return
         with open(self._filename, 'rb') as f:
             content = f.read()
         self._tree = ast.parse(content)
