@@ -1,6 +1,5 @@
 import argparse
 import ast
-import re
 from contextlib import contextmanager
 from typing import (
     Any,
@@ -17,8 +16,6 @@ from typing import (
 from flake8.options.manager import OptionManager
 
 FLAKE8_ERROR = Tuple[int, int, str, 'Plugin']
-NOQA_REGEXP = re.compile(r'#.*noqa\s*($|[^:\s])', re.I)
-NOQA_ERROR_CODE_REGEXP = re.compile(r'#.*noqa\s*:\s*(\w+)', re.I)
 
 TConfig = TypeVar('TConfig')
 
@@ -65,31 +62,16 @@ class Plugin(Generic[TConfig]):
     visitors: List[Type[Visitor[TConfig]]]
     config: TConfig
 
-    def __init__(self, tree: ast.AST, filename: str) -> None:
+    def __init__(self, tree: ast.AST) -> None:
         self._tree: ast.AST = tree
-        self._filename: str = filename
-        self._lines: List[str] = []
 
     def run(self) -> Iterable[FLAKE8_ERROR]:
-        if not self._tree or not self._lines:
-            self._load_file()
-
         for visitor_cls in self.visitors:
             visitor = self._create_visitor(visitor_cls)
             visitor.visit(self._tree)
 
             for error in visitor.errors:
-                line = self._lines[error.lineno - 1]
-                if not check_noqa(line, error.code):
-                    yield self._error(error)
-
-    def _load_file(self) -> None:
-        with open(self._filename, 'rb') as f:
-            content = f.read()
-        self._tree = ast.parse(content)
-        # lines is only used for noqa verification,
-        # and we can ignore encoding errors
-        self._lines = content.decode('utf-8', errors='replace').splitlines()
+                yield self._error(error)
 
     def _error(self, error: Error) -> FLAKE8_ERROR:
         return (
@@ -142,14 +124,3 @@ class Plugin(Generic[TConfig]):
             yield
         finally:
             del cls.config
-
-
-def check_noqa(line: str, code: str) -> bool:
-    if NOQA_REGEXP.search(line):
-        return True
-
-    match = NOQA_ERROR_CODE_REGEXP.search(line)
-    if match:
-        return match.groups()[0].lower() == code.lower()
-
-    return False
