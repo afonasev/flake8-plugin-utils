@@ -184,7 +184,8 @@ The nodes are considered equivalent in the following cases:
 Unreleased
 -----
 
-* ...
+* Drop noqa detection (#56)
+* docs: Add help for Makefile
 
 1.3.1 - 2020-08-06
 -----
