@@ -155,18 +155,33 @@ The nodes are considered equivalent in the following cases:
   * anything else -- if they represent the same AST, regardless of formatting
   (with any dicts in sets inside checked according to the rules above)
 
-## License
+## For developers
 
-MIT
+### Show help
+
+    make help
+
+### Create venv and install deps
+
+    make init
+
+### Install git precommit hook
+
+    make precommit
+
+### Run linters, autoformat, tests etc.
+
+    make pretty lint test
+
+### Bump new version
+
+    make bump_major
+    make bump_minor
+    make bump_patch
 
 ## Change Log
 
 Unreleased
------
-
-* ...
-
-1.3.1 - 2020-08-06
 -----
 
 * ...
