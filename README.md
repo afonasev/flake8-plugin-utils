@@ -184,6 +184,11 @@ The nodes are considered equivalent in the following cases:
 Unreleased
 -----
 
+* ...
+
+1.3.2 - 2021-05-05
+-----
+
 * Drop noqa detection (#56)
 * docs: Add help for Makefile
 
