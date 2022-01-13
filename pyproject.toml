@@ -8,6 +8,7 @@ readme = 'README.md'
 repository = "https://github.com/afonasev/flake8-plugin-utils"
 homepage = "https://pypi.org/project/flake8-plugin-utils"
 keywords = ['flake8', 'plugin', 'utils']
+include = ["flake8_plugin_utils/py.typed"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
