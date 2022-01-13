@@ -1,6 +1,7 @@
 import ast
 
 import pytest
+
 from flake8_plugin_utils.utils import check_equivalent_nodes
 
 

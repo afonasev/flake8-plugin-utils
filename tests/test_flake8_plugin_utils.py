@@ -2,6 +2,7 @@ import ast
 from typing import NamedTuple
 
 import pytest
+
 from flake8_plugin_utils.plugin import Error, Plugin, Visitor
 from flake8_plugin_utils.utils import assert_error, assert_not_error
 
