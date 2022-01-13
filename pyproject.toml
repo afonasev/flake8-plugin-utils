@@ -17,7 +17,7 @@ python = "^3.6"
 black = {version = "^19.10-beta.0", allow-prereleases = true}
 bumpversion = "^0.6.0"
 flake8-awesome = ">=0.2.0"
-mypy = "^0.930"
+mypy = "^0.931"
 pylint = "^2.8"
 pytest = "^6.2"
 pytest-cov = "^2.11"
