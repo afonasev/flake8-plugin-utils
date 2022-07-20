@@ -87,7 +87,7 @@ class MyPluginWithConfig(Plugin):
 
     @classmethod
     def add_options(cls, options_manager):
-        options_manager.add_option('--config_option', ...)
+        options_manager.add_option('--config_option', parse_from_config=True, ...)
 
     @classmethod
     def parse_options_to_config(cls, option_manager, options, args):
