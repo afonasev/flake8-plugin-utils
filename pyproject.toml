@@ -14,7 +14,7 @@ include = ["flake8_plugin_utils/py.typed"]
 python = "^3.6"
 
 [tool.poetry.dev-dependencies]
-black = {version = "^19.10-beta.0", allow-prereleases = true}
+black = {version = "^20.8b1", allow-prereleases = true}
 bumpversion = "^0.6.0"
 flake8-awesome = ">=0.2.0"
 mypy = "^0.930"
